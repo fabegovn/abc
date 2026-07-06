@@ -387,7 +387,7 @@ const lessonType = document.querySelector("#lessonType");
 const lessonPrompt = document.querySelector("#lessonPrompt");
 const lessonHint = document.querySelector("#lessonHint");
 const lessonEmoji = document.querySelector("#lessonEmoji");
-const promptText = document.querySelector("#promptText");
+// const promptText = document.querySelector("#promptText");
 const celebration = document.querySelector("#celebration");
 const rewardAnimation = document.querySelector("#rewardAnimation");
 const sceneItem = document.querySelector("#sceneItem");
@@ -437,7 +437,7 @@ function startLesson(lesson) {
   // celebrationText.textContent = `Bé đã ghép đúng: ${lesson.answer}`;
   buildSlots();
   buildBlocks();
-  updateProgress();
+  // updateProgress();
 }
 
 function buildSlots() {
@@ -551,7 +551,7 @@ function endPointerDrag(event) {
     attemptPlace(drag.block);
     return;
   }
-  promptText.textContent = "Thả vào ô đang sáng nhé!";
+  // promptText.textContent = "Thả vào ô đang sáng nhé!";
 }
 
 function cancelPointerDrag(event) {
@@ -588,7 +588,7 @@ function attemptPlace(block) {
   block.classList.remove("shake");
   void block.offsetWidth;
   block.classList.add("shake");
-  promptText.textContent = "Thử lại nhé!";
+  // promptText.textContent = "Thử lại nhé!";
   playTryAgainSound();
 }
 
@@ -599,9 +599,9 @@ function placeCorrectBlock(block) {
   slot.style.setProperty("--slot-color", block.style.getPropertyValue("--block-color"));
   block.remove();
   state.placed += 1;
-  promptText.textContent = state.placed === state.sequence.length ? "Ghép đúng tên rồi!" : "Tốt lắm!";
+  // promptText.textContent = state.placed === state.sequence.length ? "Ghép đúng tên rồi!" : "Tốt lắm!";
   playHappySound(block.dataset.value);
-  updateProgress();
+  // updateProgress();
   markNextSlot();
   if (state.placed === state.sequence.length) {
     completeCastle();
@@ -614,14 +614,14 @@ function markNextSlot() {
   });
   const next = state.sequence[state.placed];
   nextLabel.textContent = next ? `Tìm chữ ${next}` : "Hoàn thành";
-  promptText.textContent = next ? `Tìm chữ ${next}` : "Hoàn thành!";
+  // promptText.textContent = next ? `Tìm chữ ${next}` : "Hoàn thành!";
 }
 
-function updateProgress() {
-  const percent = Math.round((state.placed / state.sequence.length) * 100);
-  progressFill.style.width = `${percent}%`;
-  progressText.textContent = `${percent}%`;
-}
+// function updateProgress() {
+//   const percent = Math.round((state.placed / state.sequence.length) * 100);
+//   progressFill.style.width = `${percent}%`;
+//   progressText.textContent = `${percent}%`;
+// }
 
 function completeCastle() {
   playScreen.classList.add("complete");
