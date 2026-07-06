@@ -453,7 +453,7 @@ function startLesson(lesson) {
   playScreen.classList.remove("complete");
   celebration.classList.add("is-hidden");
   fireworks.innerHTML = "";
-  categoryLabel.textContent = lesson.group;
+  categoryLabel.textContent = "";
   lessonType.textContent = `Bài học: ${lesson.group}`;
   lessonPrompt.textContent = lesson.prompt;
   lessonHint.textContent = lesson.hint;
@@ -465,6 +465,7 @@ function startLesson(lesson) {
   // celebrationText.textContent = `Bé đã ghép đúng: ${lesson.answer}`;
   buildSlots();
   buildBlocks();
+  markNextSlot();
   // updateProgress();
 }
 
@@ -480,7 +481,6 @@ function buildSlots() {
     slotGrid.append(slot);
   });
   slotGrid.style.setProperty("--word-length", String(Math.max(state.sequence.length, 2)));
-  markNextSlot();
 }
 
 function buildBlocks() {
@@ -641,8 +641,24 @@ function markNextSlot() {
     slot.classList.toggle("next", index === state.placed);
   });
   const next = state.sequence[state.placed];
-  nextLabel.textContent = next ? `Tìm chữ ${next}` : "Hoàn thành";
+  renderNextLabel(next);
   // promptText.textContent = next ? `Tìm chữ ${next}` : "Hoàn thành!";
+}
+
+function renderNextLabel(next) {
+  nextLabel.textContent = "";
+  if (!next) {
+    nextLabel.textContent = "Hoàn thành";
+    return;
+  }
+  const letterBlock = [...blockTray.children].find((block) => block.dataset.value === next);
+  const letterColor = letterBlock?.style.getPropertyValue("--block-color") || colors[0];
+  const textNode = document.createTextNode("Tìm chữ ");
+  const letterNode = document.createElement("span");
+  letterNode.className = "target-letter";
+  letterNode.textContent = next;
+  letterNode.style.setProperty("--target-color", letterColor);
+  nextLabel.append(textNode, letterNode);
 }
 
 // function updateProgress() {
