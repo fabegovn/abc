@@ -118,6 +118,34 @@ const lessons = [
 
 const extraLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const colors = ["#ff8fbc", "#ffe082", "#8ce7c8", "#7dc9ff", "#c8b6ff", "#ffbd8a", "#9ee7a8"];
+const letterSpeechNames = {
+  A: "ay",
+  B: "bee",
+  C: "see",
+  D: "dee",
+  E: "ee",
+  F: "eff",
+  G: "jee",
+  H: "aitch",
+  I: "eye",
+  J: "jay",
+  K: "kay",
+  L: "el",
+  M: "em",
+  N: "en",
+  O: "oh",
+  P: "pee",
+  Q: "cue",
+  R: "ar",
+  S: "ess",
+  T: "tee",
+  U: "you",
+  V: "vee",
+  W: "double you",
+  X: "ex",
+  Y: "why",
+  Z: "zee"
+};
 
 const spokenByAnswer = {
   MEO: "cat",
@@ -709,8 +737,9 @@ function speakLessonWord(lesson) {
 
 function speakLetterName(letter) {
   if (!state.soundOn || !("speechSynthesis" in window) || !letter) return;
+  const spokenLetter = letterSpeechNames[letter.toUpperCase()] || letter.toUpperCase();
   window.speechSynthesis.cancel();
-  speakQueue([{ text: letter.toUpperCase(), rate: 0.72, pitch: 1.08 }]);
+  speakQueue([{ text: spokenLetter, rate: 0.72, pitch: 1.08 }]);
 }
 
 function speakQueue(items) {
