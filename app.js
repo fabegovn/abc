@@ -119,32 +119,32 @@ const lessons = [
 const extraLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const colors = ["#ff8fbc", "#ffe082", "#8ce7c8", "#7dc9ff", "#c8b6ff", "#ffbd8a", "#9ee7a8"];
 const letterSpeechNames = {
-  A: "ay",
-  B: "bee",
-  C: "see",
-  D: "dee",
-  E: "ee",
-  F: "eff",
-  G: "jee",
-  H: "aitch",
-  I: "eye",
-  J: "jay",
-  K: "kay",
-  L: "el",
-  M: "em",
-  N: "en",
-  O: "oh",
-  P: "pee",
-  Q: "cue",
-  R: "ar",
-  S: "ess",
-  T: "tee",
-  U: "you",
-  V: "vee",
-  W: "double you",
-  X: "ex",
-  Y: "why",
-  Z: "zee"
+  A: "A.",
+  B: "B.",
+  C: "C.",
+  D: "D.",
+  E: "E.",
+  F: "F.",
+  G: "G.",
+  H: "H.",
+  I: "I.",
+  J: "J.",
+  K: "K.",
+  L: "L.",
+  M: "M.",
+  N: "N.",
+  O: "O.",
+  P: "P.",
+  Q: "Q.",
+  R: "R.",
+  S: "S.",
+  T: "T.",
+  U: "U.",
+  V: "V.",
+  W: "W.",
+  X: "X.",
+  Y: "Y.",
+  Z: "Z."
 };
 
 const spokenByAnswer = {
@@ -622,18 +622,17 @@ function attemptPlace(block) {
 
 function placeCorrectBlock(block) {
   const slot = slotGrid.children[state.placed];
+  const placedLetter = block.dataset.value;
   slot.textContent = block.dataset.value;
   slot.className = "slot filled sparkle";
   slot.style.setProperty("--slot-color", block.style.getPropertyValue("--block-color"));
   block.remove();
   state.placed += 1;
   // promptText.textContent = state.placed === state.sequence.length ? "Ghép đúng tên rồi!" : "Tốt lắm!";
-  playHappySound(block.dataset.value);
+  const completed = state.placed === state.sequence.length;
+  playHappySound(placedLetter, completed ? completeCastle : null);
   // updateProgress();
   markNextSlot();
-  if (state.placed === state.sequence.length) {
-    completeCastle();
-  }
 }
 
 function markNextSlot() {
@@ -751,23 +750,29 @@ function speakLessonWord(lesson) {
   speakQueue(queue);
 }
 
-function speakLetterName(letter) {
-  if (!state.soundOn || !("speechSynthesis" in window) || !letter) return;
+function speakLetterName(letter, onDone) {
+  if (!state.soundOn || !("speechSynthesis" in window) || !letter) {
+    onDone?.();
+    return;
+  }
   const spokenLetter = letterSpeechNames[letter.toUpperCase()] || letter.toUpperCase();
   window.speechSynthesis.cancel();
-  speakQueue([{ text: spokenLetter, rate: 0.72, pitch: 1.08 }]);
+  speakQueue([{ text: spokenLetter, rate: 0.58, pitch: 1.06 }], onDone);
 }
 
-function speakQueue(items) {
+function speakQueue(items, onDone) {
   const [current, ...rest] = items;
-  if (!current || !state.soundOn) return;
+  if (!current || !state.soundOn) {
+    onDone?.();
+    return;
+  }
   const utterance = new SpeechSynthesisUtterance(current.text);
   utterance.voice = state.speechVoice || cacheEnglishVoice();
   utterance.lang = "en-US";
   utterance.volume = 1;
   utterance.rate = current.rate;
   utterance.pitch = current.pitch;
-  utterance.onend = () => speakQueue(rest);
+  utterance.onend = () => speakQueue(rest, onDone);
   window.speechSynthesis.speak(utterance);
 }
 
@@ -813,8 +818,8 @@ function tone(frequency, start, duration, type = "sine", gainValue = 0.08) {
   oscillator.stop(audio.currentTime + start + duration);
 }
 
-function playHappySound(letter) {
-  speakLetterName(letter);
+function playHappySound(letter, onDone) {
+  speakLetterName(letter, onDone);
 }
 
 function playTryAgainSound() {
